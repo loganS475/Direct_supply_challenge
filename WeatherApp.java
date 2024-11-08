@@ -29,7 +29,6 @@ class WeatherApp{
         URI temp = new URI("https://api.openweathermap.org/data/3.0/onecall?lat="+laditude.toString()+"&lon="+longitude.toString()+"&exclude=minutely,hourly,daily,alerts&appid=f7c51f779b08d241bafbdc3feb374ed5&units=imperial");
 
         URL weatherData = temp.toURL();
-
         // sets up connection to API and variables necessary for reading
         HttpURLConnection connection = (HttpURLConnection) weatherData.openConnection();
         
@@ -39,7 +38,7 @@ class WeatherApp{
         StringBuffer data = new StringBuffer();
         String info;
 
-        //makes sure connection is good and processes data from API
+        //makes sure connection is good and requests data from API
         if(responseCode == HttpURLConnection.HTTP_OK){
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -52,30 +51,32 @@ class WeatherApp{
             
 
         }else{
-            System.out.println("Error with response code");
+            System.out.println("Error with retrevial of data"+"/n" +"Error number:"+ responseCode);
         }
-        
+        // I know that using JSON would have been cleaner and easier to use
+        // However I was having trouble with some of the necessary packages
+        // So instead I'm reformatting the string
         info = data.toString();
-        //spilts API input into the rows and columns for table
+        //creates arrays to store and reformat data
         String [] split1 = info.split(",");
         String [] columns = new String [split1.length];
         String [] rows = new String [split1.length];
-
+        //splits data into columns and rows
         for(int i=0;i<split1.length;i++){
             String [] temp1 = split1[i].split(":");
             columns[i] = temp1[0];
             rows[i]=temp1[1];
             
         }
-        //removes any bracket notation from API
+        //removes any bracket notation from row data
         for(int i=0;i<rows.length;i++){
             int index;
             char [] temp2;
             if(rows[i].contains("}")){
                 index = rows[i].indexOf("}");
                 temp2 = rows[i].toCharArray();
-                temp2[index]=' ';
-                rows[i] = new String(temp2);
+                temp2[index]=' '; // since brackets are usually at beginning or end space character won't make an obvious visible difference
+                rows[i] = new String(temp2); //allows string conversion without including format of array
             }
             if(rows[i].contains("{")){
                 index = rows[i].indexOf("{");
@@ -97,14 +98,14 @@ class WeatherApp{
             }
             
         }
-
+        //removes any bracket notation from column data
         for(int i=0;i<columns.length;i++){
             int index;
             char [] temp2;
             if(columns[i].contains("}")){
                 index = columns[i].indexOf("}");
                 temp2 = columns[i].toCharArray();
-                temp2[index]=' ';
+                temp2[index]=' '; 
                 columns[i] = new String(temp2);
             }
             if(columns[i].contains("{")){
@@ -128,13 +129,13 @@ class WeatherApp{
         }
 
         //table set up
-        String [][] stats = {rows};
+        String [][] stats = {rows}; // JTable only works with a 2D array and a 1D array 
 
         JTable table = new JTable(stats,columns);
 
-        JScrollPane scrollPane = new JScrollPane(table);
+        JScrollPane scrollPane = new JScrollPane(table);// allows ability to scroll through table
 
-        JFrame frame = new JFrame("Weather data for"+"longitude:"+longitude.toString()+" latitude: "+laditude.toString());
+        JFrame frame = new JFrame("Weather data for"+"longitude:"+longitude.toString()+" latitude: "+laditude.toString());//sets table name
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(scrollPane);
         frame.setSize(300, 500);
