@@ -26,10 +26,11 @@ class WeatherApp{
         }
 
         // All of the URL constructors are depreceated so a URI is needed
+        //All of the data requested from the API is metric
         URI temp = new URI("https://api.openweathermap.org/data/3.0/onecall?lat="+laditude.toString()+"&lon="+longitude.toString()+"&exclude=minutely,hourly,daily,alerts&appid=f7c51f779b08d241bafbdc3feb374ed5&units=imperial");
 
         URL weatherData = temp.toURL();
-        // sets up connection to weather data using API
+        // sets up connection to API and variables necessary for reading
         HttpURLConnection connection = (HttpURLConnection) weatherData.openConnection();
         
         connection.setRequestMethod("GET");
@@ -38,7 +39,7 @@ class WeatherApp{
         StringBuffer data = new StringBuffer();
         String info;
 
-        //makes sure connection is good and requests data using API
+        //makes sure connection is good and requests data from API
         if(responseCode == HttpURLConnection.HTTP_OK){
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
