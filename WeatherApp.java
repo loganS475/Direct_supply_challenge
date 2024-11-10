@@ -12,25 +12,25 @@ class WeatherApp{
     public static void main(String[] args) throws Exception {
         // this takes in an input for longitude and latitude
         Scanner scnr = new Scanner(System.in);
-        System.out.println("What is the longitude and laditude of your location");
-        System.out.println("Usage: <longitude> <laditude> please use Doubles");
+        System.out.println("What is the longitude and latitude of your location");
+        System.out.println("Usage: <longitude> <latitude> please use Doubles");
         Double longitude = scnr.nextDouble();
-        Double laditude =  scnr.nextDouble();
+        Double latitude =  scnr.nextDouble();
         scnr.close();
         //checks to make sure user input is valid
         if((longitude > 180.00) || (longitude < -180.00)){
             throw new IllegalArgumentException("Longitude must be between -180.00 and 180.00");
         }
-        if((laditude > 180.00) || (laditude < -180.00)){
-            throw new IllegalArgumentException("Laditude must be between -180.00 and 180.00");
+        if((latitude > 180.00) || (latitude < -180.00)){
+            throw new IllegalArgumentException("latitude must be between -180.00 and 180.00");
         }
 
         // All of the URL constructors are depreceated so a URI is needed
         //All of the data requested from the API is metric
-        URI temp = new URI("https://api.openweathermap.org/data/3.0/onecall?lat="+laditude.toString()+"&lon="+longitude.toString()+"&exclude=minutely,hourly,daily,alerts&appid=f7c51f779b08d241bafbdc3feb374ed5&units=imperial");
+        URI temp = new URI("https://api.openweathermap.org/data/3.0/onecall?lat="+latitude.toString()+"&lon="+longitude.toString()+"&exclude=minutely,hourly,daily,alerts&appid=f7c51f779b08d241bafbdc3feb374ed5&units=imperial");
 
         URL weatherData = temp.toURL();
-        // sets up connection to API and variables necessary for reading
+        // sets up connection to weather data using API
         HttpURLConnection connection = (HttpURLConnection) weatherData.openConnection();
         
         connection.setRequestMethod("GET");
@@ -39,7 +39,7 @@ class WeatherApp{
         StringBuffer data = new StringBuffer();
         String info;
 
-        //makes sure connection is good and requests data from API
+        //makes sure connection is good and processes data through API
         if(responseCode == HttpURLConnection.HTTP_OK){
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -136,7 +136,7 @@ class WeatherApp{
 
         JScrollPane scrollPane = new JScrollPane(table);// allows ability to scroll through table
 
-        JFrame frame = new JFrame("Weather data for"+"longitude:"+longitude.toString()+" latitude: "+laditude.toString());//sets table name
+        JFrame frame = new JFrame("Weather data for"+"longitude:"+longitude.toString()+" latitude: "+latitude.toString());//sets table name
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(scrollPane);
         frame.setSize(300, 500);
